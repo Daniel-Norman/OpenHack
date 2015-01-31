@@ -4,8 +4,10 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.parse.Parse;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 
 
@@ -22,9 +24,7 @@ public class MainActivity extends ActionBarActivity {
         Parse.initialize(this, "QFGpI1loRkUxQSqPq6L3BRvMczGjsQGh1halYtej", "TuPPTR97s9hZbvcQi21Cfy5bpJJam4VKUhvfyMbm");
 
 
-        ParseObject testObject = new ParseObject("TestObject");
-        testObject.put("foo", "bar");
-        testObject.saveInBackground();
+
     }
 
 
@@ -48,5 +48,15 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void postToParse(View view) {
+        ParseObject post = new ParseObject("Post");
+        ParseGeoPoint testGeoPoint = new ParseGeoPoint(40.0, -30.0);
+        post.put("imageURL", "http://i.imgur.com/0LcGMKl.jpg");
+        post.put("caption", "Go Bruins!");
+        post.put("locationGeoPoint", testGeoPoint);
+
+        post.saveInBackground();
     }
 }
