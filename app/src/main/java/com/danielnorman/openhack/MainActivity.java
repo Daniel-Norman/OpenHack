@@ -8,8 +8,10 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.parse.Parse;
+import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
+import com.parse.SaveCallback;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -54,12 +56,23 @@ public class MainActivity extends ActionBarActivity {
 
 
     public void postToParse(View view) {
-        ParseObject post = new ParseObject("Post");
-        ParseGeoPoint testGeoPoint = new ParseGeoPoint(40.0, -30.0);
-        post.put("imageURL", "http://i.imgur.com/0LcGMKl.jpg");
-        post.put("caption", "Go Bruins!");
-        post.put("locationGeoPoint", testGeoPoint);
+        Location location = mLocationHandler.getLocation();
+        if (location != null) {
+            ParseObject postObject = new ParseObject("Post");
+            postObject.put("imageURL", "http://i.imgur.com/0LcGMKl.jpg");
+            postObject.put("caption", "Go Bruins!");
+            postObject.put("locationGeoPoint", new ParseGeoPoint(location.getLatitude(), location.getLongitude()));
 
-        post.saveInBackground();
+            postObject.saveInBackground(new SaveCallback() {
+                public void done(ParseException e) {
+                    if (e == null) {
+                        System.out.println("Saved Post successfully.");
+                    } else {
+                        System.out.println("Error saving post: " + e);
+                    }
+                }
+            });
+        }
+
     }
 }
