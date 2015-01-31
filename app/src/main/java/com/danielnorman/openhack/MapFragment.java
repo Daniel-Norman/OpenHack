@@ -18,11 +18,14 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.ParseGeoPoint;
+import com.parse.ParseObject;
 
 public class MapFragment extends Fragment{
     //Creates objects
     MapView mapView;
     GoogleMap map;
+
+    boolean addedMarkers = false;
 
     // Creates pointer to main activity
     MainActivity mMainActivity;
@@ -55,11 +58,20 @@ public class MapFragment extends Fragment{
                     map.setMyLocationEnabled(true);
                     // Finds the current location (testing: marker at current location)
                     ParseGeoPoint loc = mMainActivity.mLocationHandler.getGeoPoint();
-                    //map.addMarker(new MarkerOptions().position(new LatLng(loc.getLatitude(), loc.getLongitude())));
+                    //map.addMarker(new MarkerOptions().position(new LatLng(loc.getLatitude(), loc.getLongitude())).);
 
                     // Zooms in on current location
-                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(loc.getLatitude(), loc.getLongitude()), 10);
+                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(loc.getLatitude(), loc.getLongitude()), 18);
                     map.animateCamera(cameraUpdate);
+
+                    //Add markers from ParseHandler
+                    if (!addedMarkers) {
+                        for (ParseObject post : mMainActivity.mParseHandler.getPostArrayList()) {
+                            ParseGeoPoint geoPoint = post.getParseGeoPoint("locationGeoPoint");
+                            map.addMarker(new MarkerOptions().position(new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude())));
+                        }
+                        addedMarkers = true;
+                    }
                 }
                 break;
             case ConnectionResult.SERVICE_MISSING:
@@ -89,5 +101,15 @@ public class MapFragment extends Fragment{
     public void onLowMemory(){
         super.onLowMemory();
         mapView.onLowMemory();
+    }
+
+    public void addMarkers() {
+        if (map != null) {
+            for (ParseObject post : mMainActivity.mParseHandler.getPostArrayList()) {
+                ParseGeoPoint geoPoint = post.getParseGeoPoint("locationGeoPoint");
+                map.addMarker(new MarkerOptions().position(new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude())));
+            }
+            addedMarkers = true;
+        }
     }
 }

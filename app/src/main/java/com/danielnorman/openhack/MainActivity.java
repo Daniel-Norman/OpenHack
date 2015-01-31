@@ -35,7 +35,7 @@ public class MainActivity extends ActionBarActivity {
     public LocationHandler mLocationHandler;
     CameraHandler mCameraHandler;
     ParseHandler mParseHandler;
-    MapFragment mMapFragment;
+    public MapFragment mMapFragment;
     public ListViewFragment mListViewFragment;
     PostFragment mPostFragment;
 
@@ -63,6 +63,8 @@ public class MainActivity extends ActionBarActivity {
         mListViewFragment.setMainActivity(this);
 
         mParseHandler.findPosts(true);
+
+        addFragment(mListViewFragment);
     }
 
     public void addFragment(Fragment fragment) {

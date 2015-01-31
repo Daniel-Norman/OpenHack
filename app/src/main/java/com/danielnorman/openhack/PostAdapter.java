@@ -30,12 +30,14 @@ public class PostAdapter extends ArrayAdapter<ParseObject> {
     MainActivity mMainActivity;
 
 
-    public PostAdapter(Context context, MainActivity mainActivity, ParseObject[] posts)
+    public PostAdapter(Context context, MainActivity mainActivity, ArrayList<ParseObject> posts)
     {
         super(context, R.layout.fragment_list_post, posts);
         this.context = context;
         this.mMainActivity = mainActivity;
     }
+
+
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -45,18 +47,12 @@ public class PostAdapter extends ArrayAdapter<ParseObject> {
         ImageView imageView = (ImageView) rowView.findViewById(R.id.post_image);
 
 
-        textView.setText(mMainActivity.mParseHandler.getPostArrayList().get(position).getString("caption"));  //set caption
-        if (mMainActivity.mParseHandler.getPostBitmapsArrayList().get(position) != null) {
-            System.out.println(mMainActivity.mParseHandler.getPostBitmapsArrayList().get(position).getWidth() + " " +
-                    mMainActivity.mParseHandler.getPostBitmapsArrayList().get(position).getHeight());
+        textView.setText(mMainActivity.mParseHandler.getPostArrayList().get(position).getString("caption"));
+        if (!mMainActivity.mParseHandler.getPostBitmapsArrayList().isEmpty() &&
+                mMainActivity.mParseHandler.getPostBitmapsArrayList().get(position) != null) {
             imageView.setImageBitmap(mMainActivity.mParseHandler.getPostBitmapsArrayList().get(position));
         }
-        //For now set the image to just the simple image from drawable
-        //imageView.setImageResource(R.drawable.dumba);
-        /*
-        String path = posts[position].getPathToImage();
-        //Set resource from image
-         */
+
 
         return rowView;
     }

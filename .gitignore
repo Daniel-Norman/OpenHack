@@ -5,3 +5,4 @@
 .DS_Store
 /build
 Hackathon.iml
+app/src/main/AndroidManifest.xml 

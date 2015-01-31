@@ -5,11 +5,8 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
-import android.view.WindowManager;
 
-import com.danielnorman.openhack.Handlers.LocationHandler;
 import com.danielnorman.openhack.MainActivity;
-import com.danielnorman.openhack.Post;
 import com.parse.FindCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
@@ -103,6 +100,11 @@ public class ParseHandler {
                                     if (e == null) {
                                         Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
                                         mPostBitmapsArrayList.add(bmp);
+                                        if (mPostBitmapsArrayList.size() == mPostArrayList.size()) {
+                                            //We've loaded every image, so load the two views
+                                            mMainActivity.mListViewFragment.mPostAdapter.addAll(mPostArrayList);
+                                            mMainActivity.mMapFragment.addMarkers();
+                                        }
                                         System.out.println("Added bitmap");
                                     } else {
                                         // something went wrong
