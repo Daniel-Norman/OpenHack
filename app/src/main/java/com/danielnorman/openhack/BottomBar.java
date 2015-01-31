@@ -9,10 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-
-/**
- * Bottom Bar class fragment
- */
 public class BottomBar extends Fragment {
 
     @Override
@@ -21,14 +17,4 @@ public class BottomBar extends Fragment {
 
         return inflater.inflate(R.layout.bottom_bar, container, false);
     }
-
-    public void toMap(View view) {
-
-    }
-
-    public void toList(View view) {
-        
-    }
-
-
 }
