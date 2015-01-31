@@ -1,7 +1,8 @@
-package com.danielnorman.openhack;
+package com.danielnorman.openhack.Handlers;
 
 import android.util.Log;
 
+import com.danielnorman.openhack.Handlers.LocationHandler;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;

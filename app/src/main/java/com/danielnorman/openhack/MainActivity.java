@@ -1,5 +1,7 @@
 package com.danielnorman.openhack;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -10,6 +12,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.danielnorman.openhack.Handlers.LocationHandler;
+import com.danielnorman.openhack.Handlers.ParseHandler;
 import com.parse.Parse;
 
 import java.io.ByteArrayOutputStream;
@@ -18,6 +22,9 @@ public class MainActivity extends ActionBarActivity {
     private static int RESULT_LOAD_IMAGE = 1;
 
     LocationHandler mLocationHandler;
+    MapFragment mMapFragment;
+    ListViewFragment mListViewFragment;
+    PostFragment mPostFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +37,15 @@ public class MainActivity extends ActionBarActivity {
         Parse.initialize(this, "QFGpI1loRkUxQSqPq6L3BRvMczGjsQGh1halYtej", "TuPPTR97s9hZbvcQi21Cfy5bpJJam4VKUhvfyMbm");
 
         mLocationHandler = new LocationHandler(this);
+        mMapFragment = new MapFragment();
+        mListViewFragment = new ListViewFragment();
+        mPostFragment = new PostFragment();
     }
 
+    public void addFragment(Fragment fragment) {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.main_layout, fragment).commit();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -53,6 +67,18 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onClickMap(View view) {
+        addFragment(mMapFragment);
+    }
+
+    public void onClickList(View view) {
+        addFragment(mListViewFragment);
+    }
+
+    public void onClickPost(View view) {
+        addFragment(mPostFragment);
     }
 
     public void pickImage(View view) {

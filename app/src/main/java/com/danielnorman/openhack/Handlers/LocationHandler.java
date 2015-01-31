@@ -1,4 +1,4 @@
-package com.danielnorman.openhack;
+package com.danielnorman.openhack.Handlers;
 
 import android.content.Context;
 import android.location.Criteria;
