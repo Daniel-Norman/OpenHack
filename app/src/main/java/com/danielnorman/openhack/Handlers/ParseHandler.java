@@ -84,8 +84,9 @@ public class ParseHandler {
         if (location != null) {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Post");
             if (refreshPosts) {
+                if (mMainActivity.mListViewFragment.mPostAdapter != null) mMainActivity.mListViewFragment.mPostAdapter.clear();
                 mPostArrayList.clear();
-                for (Bitmap bmp : mPostBitmapsArrayList) bmp = null;
+                for (Bitmap bmp : mPostBitmapsArrayList) bmp.recycle();
                 mPostBitmapsArrayList.clear();
             } else {
                 query.setSkip(mPostArrayList.size());
@@ -96,26 +97,7 @@ public class ParseHandler {
                 public void done(List<ParseObject> postList, ParseException e) {
                     if (e == null) {
                         mPostArrayList.addAll(postList);
-                        for (ParseObject post : mPostArrayList) {
-                            ParseFile imageParseFile = (ParseFile) post.get("imageFile");
-                            imageParseFile.getDataInBackground(new GetDataCallback() {
-                                public void done(byte[] data, ParseException e) {
-                                    if (e == null) {
-                                        Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-                                        mPostBitmapsArrayList.add(bmp);
-                                        if (mPostBitmapsArrayList.size() == mPostArrayList.size()) {
-                                            //We've loaded every image, so load the two views
-                                            System.out.println("addAll listSize: " + mPostArrayList.size());
-                                            mMainActivity.mListViewFragment.mPostAdapter.addAll(mPostArrayList);
-                                            mMainActivity.mMapFragment.addMarkers();
-                                        }
-                                        //System.out.println("Added bitmap");
-                                    } else {
-                                        // something went wrong
-                                    }
-                                }
-                            });
-                        }
+                        loadImage(mPostBitmapsArrayList.size());
                     } else {
                         Log.d("Parse", "Error: " + e.getMessage());
                     }
@@ -123,6 +105,28 @@ public class ParseHandler {
             });
 
         }
+    }
+
+    public void loadImage(final int index) {
+        if (index >= mPostArrayList.size()) return;
+        ParseFile imageParseFile = (ParseFile) mPostArrayList.get(index).get("imageFile");
+        imageParseFile.getDataInBackground(new GetDataCallback() {
+            public void done(byte[] data, ParseException e) {
+                if (e == null) {
+                    Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+                    if (index >= mPostArrayList.size()) return;
+                    mMainActivity.mListViewFragment.mPostAdapter.add(mPostArrayList.get(index));
+                    mPostBitmapsArrayList.add(bmp);
+                    if (mPostBitmapsArrayList.size() < mPostArrayList.size()) {
+                        loadImage(index + 1);
+                    } else {
+                        mMainActivity.mMapFragment.addMarkers();
+                    }
+                } else {
+                    // something went wrong
+                }
+            }
+        });
     }
 
     public ArrayList<ParseObject> getPostArrayList() {
