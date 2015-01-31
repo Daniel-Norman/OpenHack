@@ -5,6 +5,7 @@
     tools:context=".MainActivity"
     >
 
+
     <fragment
         android:name="com.danielnorman.openhack.BottomBar"
         android:id="@+id/bottom"
