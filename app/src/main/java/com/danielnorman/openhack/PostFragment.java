@@ -16,7 +16,7 @@ import java.io.ByteArrayOutputStream;
 public class PostFragment extends Fragment {
 
     ImageView mImageView;
-    EditText mCatpionEditText;
+    EditText mCaptionEditText;
     Bitmap mBitmap;
     MainActivity mMainActivity;
 
@@ -34,8 +34,8 @@ public class PostFragment extends Fragment {
         if (mImageView == null) {
             mImageView = (ImageView) getView().findViewById(R.id.image_view);
         }
-        if (mCatpionEditText == null) {
-            mCatpionEditText = (EditText) getView().findViewById(R.id.caption_edittext);
+        if (mCaptionEditText == null) {
+            mCaptionEditText = (EditText) getView().findViewById(R.id.caption_edittext);
         }
 
         mImageView.setImageBitmap(mBitmap);
@@ -47,7 +47,7 @@ public class PostFragment extends Fragment {
             mBitmap.compress(Bitmap.CompressFormat.JPEG, 40, outputStream);
             byte[] imageData = outputStream.toByteArray();
 
-            mMainActivity.mParseHandler.postToParse(mCatpionEditText.getText().toString(), imageData);
+            mMainActivity.mParseHandler.postToParse(mCaptionEditText.getText().toString(), imageData);
         }
     }
 }

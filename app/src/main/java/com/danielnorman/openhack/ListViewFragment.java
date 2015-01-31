@@ -8,7 +8,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.app.ListFragment;
 
+import com.parse.ParseObject;
+
 public class ListViewFragment extends ListFragment {
+
+    MainActivity mMainActivity;
+
+    public void setMainActivity(MainActivity mainActivity) {
+        this.mMainActivity = mainActivity;
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -19,8 +27,9 @@ public class ListViewFragment extends ListFragment {
         Post p2 = new Post("asd","I really like this pic of me and the bae.");
         Post p3 = new Post("", "Nomnomnom! Delicious sandwich");
         Post[] posts = new Post[] {p1, p2, p3};
-        PostAdapter adapter1 = new PostAdapter( getActivity(),
-                 posts);
+
+        PostAdapter adapter1 = new PostAdapter( getActivity(), mMainActivity,
+                mMainActivity.mParseHandler.getPostArrayList().toArray(new ParseObject[0]));
         setListAdapter(adapter1);
     }
 

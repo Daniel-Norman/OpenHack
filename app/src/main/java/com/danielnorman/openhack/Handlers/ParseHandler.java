@@ -2,12 +2,16 @@ package com.danielnorman.openhack.Handlers;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.WindowManager;
 
 import com.danielnorman.openhack.Handlers.LocationHandler;
 import com.danielnorman.openhack.MainActivity;
+import com.danielnorman.openhack.Post;
 import com.parse.FindCallback;
+import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
@@ -15,14 +19,21 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ParseHandler {
 
     MainActivity mMainActivity;
 
+    ArrayList<ParseObject> mPostArrayList;
+    ArrayList<Bitmap> mPostBitmapsArrayList;
+
+
     public ParseHandler(MainActivity mainActivity) {
         this.mMainActivity = mainActivity;
+        this.mPostArrayList = new ArrayList<>();
+        this.mPostBitmapsArrayList = new ArrayList<>();
     }
 
     public void postToParse(final String caption, byte[] imageData) {
@@ -59,26 +70,6 @@ public class ParseHandler {
         }
     }
 
-    public void findParsePosts(LocationHandler locationHandler) {
-        ParseGeoPoint location = locationHandler.getGeoPoint();
-        if (location != null) {
-            ParseQuery<ParseObject> query = ParseQuery.getQuery("Post");
-            query.whereWithinMiles("locationGeoPoint", location, 1);
-            query.findInBackground(new FindCallback<ParseObject>() {
-                public void done(List<ParseObject> postList, ParseException e) {
-                    if (e == null) {
-                        for (ParseObject post : postList) {
-
-                            Log.d("Parse", post.getString("caption"));
-                        }
-                    } else {
-                        Log.d("Parse", "Error: " + e.getMessage());
-                    }
-                }
-            });
-        }
-    }
-
     public void showAlert() {
         new AlertDialog.Builder(mMainActivity)
                 .setTitle("Post Submitted")
@@ -89,5 +80,49 @@ public class ParseHandler {
                 })
                 .setIcon(android.R.drawable.ic_dialog_info)
                 .show();
+    }
+
+    public void findPosts(boolean refreshPosts) {
+        ParseGeoPoint location = mMainActivity.mLocationHandler.getGeoPoint();
+        if (location != null) {
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Post");
+            if (refreshPosts) {
+                mPostArrayList.clear();
+            } else {
+                query.setSkip(mPostArrayList.size());
+            }
+            query.whereWithinMiles("locationGeoPoint", location, 10);
+            query.findInBackground(new FindCallback<ParseObject>() {
+                public void done(List<ParseObject> postList, ParseException e) {
+                    if (e == null) {
+                        mPostArrayList.addAll(postList);
+                        for (ParseObject post : mPostArrayList) {
+                            ParseFile imageParseFile = (ParseFile) post.get("imageFile");
+                            imageParseFile.getDataInBackground(new GetDataCallback() {
+                                public void done(byte[] data, ParseException e) {
+                                    if (e == null) {
+                                        Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+                                        mPostBitmapsArrayList.add(bmp);
+                                        System.out.println("Added bitmap");
+                                    } else {
+                                        // something went wrong
+                                    }
+                                }
+                            });
+                        }
+                    } else {
+                        Log.d("Parse", "Error: " + e.getMessage());
+                    }
+                }
+            });
+
+        }
+    }
+
+    public ArrayList<ParseObject> getPostArrayList() {
+        return this.mPostArrayList;
+    }
+    public ArrayList<Bitmap> getPostBitmapsArrayList() {
+        return this.mPostBitmapsArrayList;
     }
 }

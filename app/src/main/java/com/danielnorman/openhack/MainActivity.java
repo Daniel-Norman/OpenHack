@@ -28,7 +28,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class MainActivity extends ActionBarActivity {
-    private static int RESULT_LOAD_IMAGE = 1;
     public static int REQUEST_TAKE_PHOTO = 2;
     public static int REQUEST_CROP_PHOTO = 3;
 
@@ -60,6 +59,10 @@ public class MainActivity extends ActionBarActivity {
         mPostFragment = new PostFragment();
 
         mPostFragment.setMainActivity(this);
+        mMapFragment.setMainActivity(this);
+        mListViewFragment.setMainActivity(this);
+
+        mParseHandler.findPosts(true);
     }
 
     public void addFragment(Fragment fragment) {
@@ -102,9 +105,14 @@ public class MainActivity extends ActionBarActivity {
                 addFragment(mMapFragment);
                 break;
             case R.id.submit_button:
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(mPostFragment.mCatpionEditText.getWindowToken(), 0);
-                mPostFragment.submitPost();
+                if (mPostFragment.mImageView == null) {
+                    //Don't have an image, so go back to list view
+                    addFragment(mListViewFragment);
+                } else {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(mPostFragment.mCaptionEditText.getWindowToken(), 0);
+                    mPostFragment.submitPost();
+                }
                 break;
         }
     }

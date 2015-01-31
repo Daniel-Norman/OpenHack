@@ -7,7 +7,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
         <fragment
-            android:name="com.danielnorman.openhack.PostListFragment"
+            android:name="com.danielnorman.openhack.PostFragment"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             tools:layout="@layout/fragment_list_post" />

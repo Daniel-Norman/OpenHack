@@ -14,6 +14,8 @@
         <ImageView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
             android:id="@+id/post_image" />
         <TextView
             android:id="@+id/caption"
