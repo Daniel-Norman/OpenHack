@@ -48,6 +48,7 @@ public class CameraHandler {
 
 
     public void dispatchTakePictureIntent() {
+        //new Intent(Intent.ACTION_PICK, MediaStore.ACTION_IMAGE_CAPTURE);
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(mMainActivity.getPackageManager()) != null) {
@@ -63,7 +64,7 @@ public class CameraHandler {
             // Continue only if the File was successfully created
             if (photoFile != null) {
                 mImageUri = Uri.fromFile(photoFile);
-                //takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
                 mMainActivity.startActivityForResult(takePictureIntent, mMainActivity.REQUEST_TAKE_PHOTO);
             }
         }

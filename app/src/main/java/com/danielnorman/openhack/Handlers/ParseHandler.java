@@ -56,6 +56,7 @@ public class ParseHandler {
                 public void done(List<ParseObject> postList, ParseException e) {
                     if (e == null) {
                         for (ParseObject post : postList) {
+
                             Log.d("Parse", post.getString("caption"));
                         }
                     } else {

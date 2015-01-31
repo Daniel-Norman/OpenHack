@@ -4,26 +4,26 @@
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
-    <Button
+    <Button android:id="@+id/list_button"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="2"
         android:text="@string/list"
-        android:onClick="onClickList"/>
+        android:onClick="onClick"/>
 
-    <Button
+    <Button android:id="@+id/post_button"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:text="@string/post"
-        android:onClick="onClickPost"
+        android:onClick="onClick"
         />
 
-    <Button
+    <Button android:id="@+id/map_button"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="2"
         android:text="@string/map"
-        android:onClick="onClickMap"/>
+        android:onClick="onClick"/>
 
 </LinearLayout>
