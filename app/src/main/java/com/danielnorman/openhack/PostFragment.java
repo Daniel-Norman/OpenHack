@@ -9,8 +9,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.danielnorman.openhack.Handlers.ParseHandler;
-
 import java.io.ByteArrayOutputStream;
 
 public class PostFragment extends Fragment {
