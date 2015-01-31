@@ -2,6 +2,7 @@ package com.danielnorman.openhack;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -12,6 +13,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 import com.danielnorman.openhack.Handlers.CameraHandler;
 import com.danielnorman.openhack.Handlers.LocationHandler;
@@ -34,7 +37,7 @@ public class MainActivity extends ActionBarActivity {
     CameraHandler mCameraHandler;
     ParseHandler mParseHandler;
     MapFragment mMapFragment;
-    ListViewFragment mListViewFragment;
+    public ListViewFragment mListViewFragment;
     PostFragment mPostFragment;
 
     @Override
@@ -99,6 +102,8 @@ public class MainActivity extends ActionBarActivity {
                 addFragment(mMapFragment);
                 break;
             case R.id.submit_button:
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(mPostFragment.mCatpionEditText.getWindowToken(), 0);
                 mPostFragment.submitPost();
                 break;
         }

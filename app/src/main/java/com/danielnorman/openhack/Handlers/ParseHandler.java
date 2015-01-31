@@ -3,6 +3,7 @@ package com.danielnorman.openhack.Handlers;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.util.Log;
+import android.view.WindowManager;
 
 import com.danielnorman.openhack.Handlers.LocationHandler;
 import com.danielnorman.openhack.MainActivity;
@@ -43,6 +44,7 @@ public class ParseHandler {
                             public void done(ParseException e) {
                                 if (e == null) {
                                     showAlert();
+                                    mMainActivity.addFragment(mMainActivity.mListViewFragment);
                                     System.out.println("Saved Post successfully.");
                                 } else {
                                     System.out.println("Error saving post: " + e);
