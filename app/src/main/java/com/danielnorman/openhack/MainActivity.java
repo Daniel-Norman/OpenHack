@@ -40,6 +40,7 @@ public class MainActivity extends ActionBarActivity {
         mMapFragment = new MapFragment();
         mListViewFragment = new ListViewFragment();
         mPostFragment = new PostFragment();
+        mMapFragment.setMainActivity(this);
     }
 
     public void addFragment(Fragment fragment) {
