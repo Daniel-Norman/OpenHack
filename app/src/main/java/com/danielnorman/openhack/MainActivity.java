@@ -3,15 +3,21 @@ package com.danielnorman.openhack;
 import android.location.Location;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.SaveCallback;
+
+import java.util.List;
+
 
 public class MainActivity extends ActionBarActivity {
 
@@ -55,12 +61,14 @@ public class MainActivity extends ActionBarActivity {
 
 
     public void postToParse(View view) {
-        Location location = mLocationHandler.getLocation();
+        findParsePosts();
+        /*
+        ParseGeoPoint location = mLocationHandler.getGeoPoint();
         if (location != null) {
             ParseObject postObject = new ParseObject("Post");
             postObject.put("imageURL", "http://i.imgur.com/0LcGMKl.jpg");
             postObject.put("caption", "Go Bruins!");
-            postObject.put("locationGeoPoint", new ParseGeoPoint(location.getLatitude(), location.getLongitude()));
+            postObject.put("locationGeoPoint", location);
 
             postObject.saveInBackground(new SaveCallback() {
                 public void done(ParseException e) {
@@ -71,8 +79,25 @@ public class MainActivity extends ActionBarActivity {
                     }
                 }
             });
-        }
-
+        }*/
     }
 
+    public void findParsePosts() {
+        ParseGeoPoint location = mLocationHandler.getGeoPoint();
+        if (location != null) {
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Post");
+            query.whereWithinMiles("locationGeoPoint", location, 1);
+            query.findInBackground(new FindCallback<ParseObject>() {
+                public void done(List<ParseObject> postList, ParseException e) {
+                    if (e == null) {
+                        for (ParseObject post : postList) {
+                            Log.d("Parse", post.getString("caption"));
+                        }
+                    } else {
+                        Log.d("Parse", "Error: " + e.getMessage());
+                    }
+                }
+            });
+        }
+    }
 }
