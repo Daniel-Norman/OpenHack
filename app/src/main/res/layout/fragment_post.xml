@@ -37,7 +37,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"/>
-        <EditText
+        <EditText android:id="@+id/caption_edittext"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="4"/>
@@ -66,10 +66,5 @@
             android:layout_weight="1"/>
 
         </LinearLayout>
-
-
-
-
-
 
 </LinearLayout>

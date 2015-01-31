@@ -30,8 +30,9 @@ public class MainActivity extends ActionBarActivity {
     public static int REQUEST_CROP_PHOTO = 3;
 
 
-    LocationHandler mLocationHandler;
+    public LocationHandler mLocationHandler;
     CameraHandler mCameraHandler;
+    ParseHandler mParseHandler;
     MapFragment mMapFragment;
     ListViewFragment mListViewFragment;
     PostFragment mPostFragment;
@@ -46,8 +47,10 @@ public class MainActivity extends ActionBarActivity {
 
         Parse.initialize(this, "QFGpI1loRkUxQSqPq6L3BRvMczGjsQGh1halYtej", "TuPPTR97s9hZbvcQi21Cfy5bpJJam4VKUhvfyMbm");
 
+
         mLocationHandler = new LocationHandler(this);
         mCameraHandler = new CameraHandler(this);
+        mParseHandler = new ParseHandler(this);
 
         mMapFragment = new MapFragment();
         mListViewFragment = new ListViewFragment();
@@ -126,4 +129,6 @@ public class MainActivity extends ActionBarActivity {
             } catch (Exception e) {}
         }
     }
+
+
 }

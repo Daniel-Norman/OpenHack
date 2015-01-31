@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.danielnorman.openhack.Handlers.ParseHandler;
@@ -15,13 +16,12 @@ import java.io.ByteArrayOutputStream;
 public class PostFragment extends Fragment {
 
     ImageView mImageView;
+    EditText mCatpionEditText;
     Bitmap mBitmap;
     MainActivity mMainActivity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
         return inflater.inflate(R.layout.fragment_post, container, false);
     }
 
@@ -34,7 +34,9 @@ public class PostFragment extends Fragment {
         if (mImageView == null) {
             mImageView = (ImageView) getView().findViewById(R.id.image_view);
         }
-
+        if (mCatpionEditText == null) {
+            mCatpionEditText = (EditText) getView().findViewById(R.id.caption_edittext);
+        }
 
         mImageView.setImageBitmap(mBitmap);
     }
@@ -45,8 +47,7 @@ public class PostFragment extends Fragment {
             mBitmap.compress(Bitmap.CompressFormat.JPEG, 40, outputStream);
             byte[] imageData = outputStream.toByteArray();
 
-            ParseHandler.postToParse(mMainActivity.mLocationHandler, imageData);
+            mMainActivity.mParseHandler.postToParse(mCatpionEditText.getText().toString(), imageData);
         }
-
     }
 }
