@@ -94,9 +94,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
                             // Getting view from the layout file info_window_layout
                             View v = inflater.inflate(R.layout.map_window_layout, null);
 
-                            // Getting the position from the marker
-                            LatLng latLng = marker.getPosition();
-
                             // Getting reference to the TextView to set latitude
                             TextView captionTextView = (TextView) v.findViewById(R.id.map_window_textview);
 
