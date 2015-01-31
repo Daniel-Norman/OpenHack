@@ -10,7 +10,6 @@ import com.parse.Parse;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 
-
 public class MainActivity extends ActionBarActivity {
 
     @Override
@@ -59,4 +58,5 @@ public class MainActivity extends ActionBarActivity {
 
         post.saveInBackground();
     }
+
 }
