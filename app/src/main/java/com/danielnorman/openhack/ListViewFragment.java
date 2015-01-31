@@ -1,19 +1,31 @@
 package com.danielnorman.openhack;
 
-import android.app.Fragment;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.app.ListFragment;
 
-/**
- * Created by Daniel on 1/31/15.
- */
-public class ListViewFragment extends Fragment {
+public class ListViewFragment extends ListFragment {
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_list, container, false);
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+
+        Post p1 = new Post("aasdf","This is a nice picture.");
+        Post p2 = new Post("asd","I really like this pic of me and the bae.");
+        Post p3 = new Post("", "Nomnomnom! Delicious sandwich");
+        Post[] posts = new Post[] {p1, p2, p3};
+        PostAdapter adapter1 = new PostAdapter( getActivity(),
+                 posts);
+        setListAdapter(adapter1);
     }
-}
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        // do something with the data
+    }
+} 
