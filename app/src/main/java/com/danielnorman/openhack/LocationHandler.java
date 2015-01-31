@@ -7,6 +7,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
+import com.parse.ParseGeoPoint;
+
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
@@ -18,6 +20,7 @@ public class LocationHandler {
     private Context mContext;
     private LocationManager mLocationManager;
     private Location mLocation;
+    private ParseGeoPoint mGeoPoint;
 
 
     public LocationHandler(Context mContext) {
@@ -27,18 +30,29 @@ public class LocationHandler {
         Criteria criteria = new Criteria();
         String provider = mLocationManager.getBestProvider(criteria, true);
         this.mLocation = mLocationManager.getLastKnownLocation(provider);
+        if (this.mLocation != null) {
+            this.mGeoPoint = new ParseGeoPoint(this.mLocation.getLatitude(), this.mLocation.getLongitude());
+        } else {
+            this.mGeoPoint = null;
+        }
 
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 10, locationListenerGps);
     }
 
-    public Location getLocation()
-    {
+    public ParseGeoPoint getGeoPoint() {
+        return mGeoPoint;
+    }
+    public Location getLocation() {
         return mLocation;
     }
 
     LocationListener locationListenerGps = new LocationListener() {
         public void onLocationChanged(Location location) {
-            if (location != null) mLocation = location;
+            if (location != null) {
+                mLocation = location;
+                if (mLocation != null) {
+                    mGeoPoint = new ParseGeoPoint(mLocation.getLatitude(), mLocation.getLongitude());
+                }            }
             System.out.println("Print location");
         }
         public void onProviderDisabled(String provider) {}
