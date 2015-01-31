@@ -1,28 +1,21 @@
 package com.danielnorman.openhack;
 
-import android.location.Location;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.parse.FindCallback;
 import com.parse.Parse;
-import com.parse.ParseException;
-import com.parse.ParseGeoPoint;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.SaveCallback;
 
-<<<<<<< HEAD
-import java.util.List;
+import java.io.ByteArrayOutputStream;
 
-
-=======
->>>>>>> master
 public class MainActivity extends ActionBarActivity {
+    private static int RESULT_LOAD_IMAGE = 1;
 
     LocationHandler mLocationHandler;
 
@@ -62,46 +55,24 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    public void postToParse(View view) {
-        findParsePosts();
-        /*
-        ParseGeoPoint location = mLocationHandler.getGeoPoint();
-        if (location != null) {
-            ParseObject postObject = new ParseObject("Post");
-            postObject.put("imageURL", "http://i.imgur.com/0LcGMKl.jpg");
-            postObject.put("caption", "Go Bruins!");
-            postObject.put("locationGeoPoint", location);
-
-            postObject.saveInBackground(new SaveCallback() {
-                public void done(ParseException e) {
-                    if (e == null) {
-                        System.out.println("Saved Post successfully.");
-                    } else {
-                        System.out.println("Error saving post: " + e);
-                    }
-                }
-            });
-        }*/
+    public void pickImage(View view) {
+        Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(i, RESULT_LOAD_IMAGE);
     }
 
-    public void findParsePosts() {
-        ParseGeoPoint location = mLocationHandler.getGeoPoint();
-        if (location != null) {
-            ParseQuery<ParseObject> query = ParseQuery.getQuery("Post");
-            query.whereWithinMiles("locationGeoPoint", location, 1);
-            query.findInBackground(new FindCallback<ParseObject>() {
-                public void done(List<ParseObject> postList, ParseException e) {
-                    if (e == null) {
-                        for (ParseObject post : postList) {
-                            Log.d("Parse", post.getString("caption"));
-                        }
-                    } else {
-                        Log.d("Parse", "Error: " + e.getMessage());
-                    }
-                }
-            });
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
+            final Uri selectedImage = data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 40, outputStream);
+                byte[] imageData = outputStream.toByteArray();
+
+                ParseHandler.postToParse(mLocationHandler, imageData);
+            } catch (Exception e) { }
         }
     }
-
 }
