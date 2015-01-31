@@ -16,9 +16,12 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
+<<<<<<< HEAD
 import java.util.List;
 
 
+=======
+>>>>>>> master
 public class MainActivity extends ActionBarActivity {
 
     LocationHandler mLocationHandler;
@@ -100,4 +103,5 @@ public class MainActivity extends ActionBarActivity {
             });
         }
     }
+
 }
