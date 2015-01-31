@@ -47,13 +47,17 @@ public class PostAdapter extends ArrayAdapter<ParseObject> {
         ImageView imageView = (ImageView) rowView.findViewById(R.id.post_image);
 
 
-        System.out.println(position);
+        if (position >= mMainActivity.mParseHandler.getPostArrayList().size()) return rowView;
 
         textView.setText(mMainActivity.mParseHandler.getPostArrayList().get(position).getString("caption"));
         if (!mMainActivity.mParseHandler.getPostBitmapsArrayList().isEmpty() &&
                 mMainActivity.mParseHandler.getPostBitmapsArrayList().size() > position &&
                 mMainActivity.mParseHandler.getPostBitmapsArrayList().get(position) != null) {
             imageView.setImageBitmap(mMainActivity.mParseHandler.getPostBitmapsArrayList().get(position));
+        }
+
+        if (position == mMainActivity.mParseHandler.getPostArrayList().size() - 1) {
+            mMainActivity.mParseHandler.findPosts(false);
         }
 
 
