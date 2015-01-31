@@ -46,7 +46,7 @@ public class ParseHandler {
         }
     }
 
-    public static void findParsePostsNearLocation(LocationHandler locationHandler) {
+    public static void findParsePosts(LocationHandler locationHandler) {
         ParseGeoPoint location = locationHandler.getGeoPoint();
         if (location != null) {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Post");
