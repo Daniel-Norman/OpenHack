@@ -20,6 +20,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,7 +35,7 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyBD1kQ0r7L4qlFKfy5MJLB60Mqfh9t7rtg"/>
+            android:value="AIzaSyBNJ5oFR_rNxWmP7-HiAfCPO7VTXd92jMo"/>
 
     </application>
 

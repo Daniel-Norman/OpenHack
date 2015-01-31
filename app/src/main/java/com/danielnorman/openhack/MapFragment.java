@@ -52,7 +52,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         // Processes different device states
         switch (GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity())){
             case ConnectionResult.SUCCESS:
-                Toast.makeText(getActivity(), "Connected", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "Connected", Toast.LENGTH_SHORT).show();
                 mapView = (MapView) v.findViewById(R.id.map);
                 mapView.onCreate(savedInstanceState);
 
