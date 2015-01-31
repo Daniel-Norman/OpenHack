@@ -3,6 +3,11 @@
 
     <string name="app_name">OpenHack</string>
     <string name="hello_world">Hello world!</string>
+    <string name="post_submit">Submit Post</string>
+    <string name="cancel">Cancel</string>
+    <string name="list">List</string>
+    <string name="post">Post</string>
+    <string name="map">Map</string>
     <string name="action_settings">Settings</string>
 
 </resources>
