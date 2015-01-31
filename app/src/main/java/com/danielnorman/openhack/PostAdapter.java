@@ -19,6 +19,7 @@ import com.parse.ParseObject;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by jtink_000 on 1/31/2015.
@@ -48,19 +49,37 @@ public class PostAdapter extends ArrayAdapter<ParseObject> {
 
 
         if (position >= mMainActivity.mParseHandler.getPostArrayList().size()) return rowView;
+        ParseObject post = mMainActivity.mParseHandler.getPostArrayList().get(position);
 
-        textView.setText(mMainActivity.mParseHandler.getPostArrayList().get(position).getString("caption"));
+        textView.setText(post.getString("caption"));
+        System.out.println(timeDifferenceFromPost(post));
         if (!mMainActivity.mParseHandler.getPostBitmapsArrayList().isEmpty() &&
-                mMainActivity.mParseHandler.getPostBitmapsArrayList().size() > position &&
                 mMainActivity.mParseHandler.getPostBitmapsArrayList().get(position) != null) {
             imageView.setImageBitmap(mMainActivity.mParseHandler.getPostBitmapsArrayList().get(position));
         }
 
+
+        //Scroll to refresh
         if (position == mMainActivity.mParseHandler.getPostArrayList().size() - 1) {
             mMainActivity.mParseHandler.findPosts(false);
         }
 
 
         return rowView;
+    }
+
+    public String timeDifferenceFromPost(ParseObject post)
+    {
+        double difference = ((new Date()).getTime() - post.getCreatedAt().getTime()) / 1000;
+        if (difference > 60 * 60) {
+            int hours = (int) Math.round(difference / (60 * 60));
+            return hours + (hours > 1 ? " hours " : " hour ") + "ago";
+        }
+        if (difference > 60 * 2) {
+            int minutes = (int) Math.round(difference / 60);
+            return minutes + " minutes ago";
+        }
+        return "just now";
+
     }
 }
