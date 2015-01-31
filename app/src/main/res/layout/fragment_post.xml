@@ -4,6 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView android:id="@+id/image_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="15"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -17,16 +22,17 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="4"
+            android:textStyle="bold"
+            android:textSize="65px"
             android:text="Submit"
+            style="?android:attr/borderlessButtonStyle"
             android:onClick="onClick"/>
         <Space
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"/>
 
-
     </LinearLayout>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -40,31 +46,12 @@
         <EditText android:id="@+id/caption_edittext"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="4"/>
+            android:layout_weight="6"
+            android:textSize="40px"/>
         <Space
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"/>
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="15"
-        android:orientation="horizontal">
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
-        <ImageView android:id="@+id/image_view"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="8"/>
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
-
-        </LinearLayout>
 
 </LinearLayout>

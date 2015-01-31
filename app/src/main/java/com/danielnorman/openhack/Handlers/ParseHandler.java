@@ -53,6 +53,7 @@ public class ParseHandler {
                                 if (e == null) {
                                     showAlert();
                                     mMainActivity.addFragment(mMainActivity.mListViewFragment);
+                                    findPosts(true);
                                     System.out.println("Saved Post successfully.");
                                 } else {
                                     System.out.println("Error saving post: " + e);
