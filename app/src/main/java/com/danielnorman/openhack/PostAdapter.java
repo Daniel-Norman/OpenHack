@@ -44,6 +44,7 @@ public class PostAdapter extends ArrayAdapter<ParseObject> {
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.fragment_list_post, parent, false);
+        TextView timeStamp = (TextView) rowView.findViewById(R.id.time_stamp);
         TextView textView = (TextView) rowView.findViewById(R.id.caption);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.post_image);
 
@@ -52,6 +53,7 @@ public class PostAdapter extends ArrayAdapter<ParseObject> {
         ParseObject post = mMainActivity.mParseHandler.getPostArrayList().get(position);
 
         textView.setText(post.getString("caption"));
+        timeStamp.setText(timeDifferenceFromPost(post));
         System.out.println(timeDifferenceFromPost(post));
         if (!mMainActivity.mParseHandler.getPostBitmapsArrayList().isEmpty() &&
                 mMainActivity.mParseHandler.getPostBitmapsArrayList().get(position) != null) {
