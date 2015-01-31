@@ -34,7 +34,6 @@ public class MainActivity extends ActionBarActivity {
     public static int REQUEST_TAKE_PHOTO = 2;
     public static int REQUEST_CROP_PHOTO = 3;
 
-
     public LocationHandler mLocationHandler;
     public CameraHandler mCameraHandler;
     public ParseHandler mParseHandler;
@@ -105,6 +104,7 @@ public class MainActivity extends ActionBarActivity {
                 if (mPostFragment.mImageView == null) {
                     //Don't have an image, so go back to list view
                     addFragment(mListViewFragment);
+                    mParseHandler.findPosts(true);
                 } else {
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(mPostFragment.mCaptionEditText.getWindowToken(), 0);
@@ -117,6 +117,11 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_CANCELED)
+        {
+            addFragment(mListViewFragment);
+            mParseHandler.findPosts(true);
+        }
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
             Uri imageUri = mCameraHandler.getImageUri();
 

@@ -21,9 +21,6 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 
-/**
- * Created by jtink_000 on 1/31/2015.
- */
 public class PostAdapter extends ArrayAdapter<ParseObject> {
 
     private final Context context;
@@ -54,7 +51,7 @@ public class PostAdapter extends ArrayAdapter<ParseObject> {
 
         textView.setText(post.getString("caption"));
         timeStamp.setText(timeDifferenceFromPost(post));
-        System.out.println(timeDifferenceFromPost(post));
+
         if (!mMainActivity.mParseHandler.getPostBitmapsArrayList().isEmpty() &&
                 mMainActivity.mParseHandler.getPostBitmapsArrayList().get(position) != null) {
             imageView.setImageBitmap(mMainActivity.mParseHandler.getPostBitmapsArrayList().get(position));
@@ -82,6 +79,5 @@ public class PostAdapter extends ArrayAdapter<ParseObject> {
             return minutes + " minutes ago";
         }
         return "just now";
-
     }
 }
