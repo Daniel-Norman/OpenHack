@@ -1,10 +1,13 @@
 package com.danielnorman.openhack;
 
 import android.app.Fragment;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -16,14 +19,18 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 
-public class MapFragment extends Fragment{
+import java.util.HashMap;
+
+public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickListener {
     //Creates objects
     MapView mapView;
     GoogleMap map;
+    HashMap<Marker, ParseObject> mPostMarkerMap = new HashMap<>();
 
     boolean addedMarkers = false;
 
@@ -36,7 +43,7 @@ public class MapFragment extends Fragment{
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         // Gets the MapView from the XML layout and creates it
         View v = inflater.inflate(R.layout.fragment_map, container, false);
         // Initializes activity
@@ -55,7 +62,9 @@ public class MapFragment extends Fragment{
                     // UI settings
                     map.getUiSettings().setMyLocationButtonEnabled(true);
                     map.getUiSettings().setCompassEnabled(true);
+                    map.getUiSettings().setMapToolbarEnabled(false);
                     map.setMyLocationEnabled(true);
+                    map.setOnMarkerClickListener(this);
                     // Finds the current location (testing: marker at current location)
                     ParseGeoPoint loc = mMainActivity.mLocationHandler.getGeoPoint();
                     //map.addMarker(new MarkerOptions().position(new LatLng(loc.getLatitude(), loc.getLongitude())).);
@@ -66,12 +75,46 @@ public class MapFragment extends Fragment{
 
                     //Add markers from ParseHandler
                     if (!addedMarkers) {
-                        for (ParseObject post : mMainActivity.mParseHandler.getPostArrayList()) {
-                            ParseGeoPoint geoPoint = post.getParseGeoPoint("locationGeoPoint");
-                            map.addMarker(new MarkerOptions().position(new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude())));
-                        }
-                        addedMarkers = true;
+                        addMarkers();
                     }
+
+                    // Setting a custom info window adapter for the google map
+                    map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+                        // Use default InfoWindow frame
+                        @Override
+                        public View getInfoWindow(Marker arg0) {
+                            return null;
+                        }
+
+                        // Defines the contents of the InfoWindow
+                        @Override
+                        public View getInfoContents(Marker marker) {
+
+                            // Getting view from the layout file info_window_layout
+                            View v = inflater.inflate(R.layout.map_window_layout, null);
+
+                            // Getting the position from the marker
+                            LatLng latLng = marker.getPosition();
+
+                            // Getting reference to the TextView to set latitude
+                            TextView captionTextView = (TextView) v.findViewById(R.id.map_window_textview);
+
+                            // Getting reference to the TextView to set longitude
+                            ImageView imageView = (ImageView) v.findViewById(R.id.map_window_imageview);
+
+                            captionTextView.setText(mPostMarkerMap.get(marker).getString("caption"));
+
+                            Bitmap bitmap = mMainActivity.mParseHandler.getPostBitmapsArrayList().get(
+                                    mMainActivity.mParseHandler.getPostArrayList().indexOf(mPostMarkerMap.get(marker)));
+
+                            imageView.setImageBitmap(bitmap);
+
+                            // Returning the view containing InfoWindow contents
+                            return v;
+
+                        }
+                    });
                 }
                 break;
             case ConnectionResult.SERVICE_MISSING:
@@ -103,11 +146,20 @@ public class MapFragment extends Fragment{
         mapView.onLowMemory();
     }
 
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        System.out.println(mPostMarkerMap.get(marker).getString("caption"));
+        marker.showInfoWindow();
+        return true;
+    }
+
     public void addMarkers() {
         if (map != null) {
             for (ParseObject post : mMainActivity.mParseHandler.getPostArrayList()) {
                 ParseGeoPoint geoPoint = post.getParseGeoPoint("locationGeoPoint");
-                map.addMarker(new MarkerOptions().position(new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude())));
+                Marker marker = map.addMarker(new MarkerOptions().position(new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude()))
+                                                .title(post.getString("caption")));
+                mPostMarkerMap.put(marker, post);
             }
             addedMarkers = true;
         }

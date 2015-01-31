@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Timer;
 
 public class MainActivity extends ActionBarActivity {
     public static int REQUEST_TAKE_PHOTO = 2;
@@ -102,9 +103,11 @@ public class MainActivity extends ActionBarActivity {
                 break;
             case R.id.list_button:
                 addFragment(mListViewFragment);
+                mParseHandler.findPosts(true);
                 break;
             case R.id.map_button:
                 addFragment(mMapFragment);
+                mParseHandler.findPosts(true);
                 break;
             case R.id.submit_button:
                 if (mPostFragment.mImageView == null) {

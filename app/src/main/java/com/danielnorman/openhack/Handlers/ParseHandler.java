@@ -85,6 +85,8 @@ public class ParseHandler {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Post");
             if (refreshPosts) {
                 mPostArrayList.clear();
+                for (Bitmap bmp : mPostBitmapsArrayList) bmp = null;
+                mPostBitmapsArrayList.clear();
             } else {
                 query.setSkip(mPostArrayList.size());
             }
@@ -104,7 +106,6 @@ public class ParseHandler {
                                         if (mPostBitmapsArrayList.size() == mPostArrayList.size()) {
                                             //We've loaded every image, so load the two views
                                             System.out.println("addAll listSize: " + mPostArrayList.size());
-                                            //mMainActivity.mListViewFragment.mPostAdapter.clear();
                                             mMainActivity.mListViewFragment.mPostAdapter.addAll(mPostArrayList);
                                             mMainActivity.mMapFragment.addMarkers();
                                         }
