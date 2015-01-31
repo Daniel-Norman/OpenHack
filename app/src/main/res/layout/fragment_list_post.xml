@@ -14,22 +14,23 @@
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
             android:id="@+id/post_image" />
-        <TextView
-            android:id="@+id/time_stamp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textStyle="italic"
-            android:gravity="right"
-            android:textColor="#585858"/>
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="3dp" />
-        <TextView
-            android:id="@+id/caption"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"/>
+
+            <TextView
+                android:id="@+id/time_stamp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textStyle="italic"
+                android:gravity="right"
+                android:textColor="#585858"
+                android:paddingRight="6dp"/>
+
+            <TextView
+                android:id="@+id/caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:paddingLeft="10dp"/>
         <Space
             android:layout_width="match_parent"
             android:layout_height="18dp" />
