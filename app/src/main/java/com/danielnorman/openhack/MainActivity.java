@@ -1,5 +1,6 @@
 package com.danielnorman.openhack;
 
+import android.location.Location;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,6 +14,8 @@ import com.parse.ParseObject;
 
 public class MainActivity extends ActionBarActivity {
 
+    LocationHandler mLocationHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,8 +26,7 @@ public class MainActivity extends ActionBarActivity {
 
         Parse.initialize(this, "QFGpI1loRkUxQSqPq6L3BRvMczGjsQGh1halYtej", "TuPPTR97s9hZbvcQi21Cfy5bpJJam4VKUhvfyMbm");
 
-
-
+        mLocationHandler = new LocationHandler(this);
     }
 
 
@@ -49,6 +51,7 @@ public class MainActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 
     public void postToParse(View view) {
         ParseObject post = new ParseObject("Post");
