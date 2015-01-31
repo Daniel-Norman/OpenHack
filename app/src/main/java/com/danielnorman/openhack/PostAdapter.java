@@ -38,17 +38,20 @@ public class PostAdapter extends ArrayAdapter<ParseObject> {
     }
 
 
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.fragment_list_post, parent, false);
         TextView textView = (TextView) rowView.findViewById(R.id.caption);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.post_image);
 
 
+        System.out.println(position);
+
         textView.setText(mMainActivity.mParseHandler.getPostArrayList().get(position).getString("caption"));
         if (!mMainActivity.mParseHandler.getPostBitmapsArrayList().isEmpty() &&
+                mMainActivity.mParseHandler.getPostBitmapsArrayList().size() > position &&
                 mMainActivity.mParseHandler.getPostBitmapsArrayList().get(position) != null) {
             imageView.setImageBitmap(mMainActivity.mParseHandler.getPostBitmapsArrayList().get(position));
         }

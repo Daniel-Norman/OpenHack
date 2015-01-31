@@ -89,6 +89,7 @@ public class ParseHandler {
                 query.setSkip(mPostArrayList.size());
             }
             query.whereWithinMiles("locationGeoPoint", location, 10);
+            query.setLimit(10);
             query.findInBackground(new FindCallback<ParseObject>() {
                 public void done(List<ParseObject> postList, ParseException e) {
                     if (e == null) {
@@ -102,10 +103,12 @@ public class ParseHandler {
                                         mPostBitmapsArrayList.add(bmp);
                                         if (mPostBitmapsArrayList.size() == mPostArrayList.size()) {
                                             //We've loaded every image, so load the two views
+                                            System.out.println("addAll listSize: " + mPostArrayList.size());
+                                            //mMainActivity.mListViewFragment.mPostAdapter.clear();
                                             mMainActivity.mListViewFragment.mPostAdapter.addAll(mPostArrayList);
                                             mMainActivity.mMapFragment.addMarkers();
                                         }
-                                        System.out.println("Added bitmap");
+                                        //System.out.println("Added bitmap");
                                     } else {
                                         // something went wrong
                                     }

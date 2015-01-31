@@ -10,6 +10,8 @@ import android.app.ListFragment;
 
 import com.parse.ParseObject;
 
+import java.util.ArrayList;
+
 public class ListViewFragment extends ListFragment {
 
     MainActivity mMainActivity;
@@ -24,7 +26,7 @@ public class ListViewFragment extends ListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mPostAdapter = new PostAdapter( getActivity(), mMainActivity, mMainActivity.mParseHandler.getPostArrayList());
+        mPostAdapter = new PostAdapter( getActivity(), mMainActivity, new ArrayList<ParseObject>()); //mMainActivity.mParseHandler.getPostArrayList());
         setListAdapter(mPostAdapter);
     }
 
