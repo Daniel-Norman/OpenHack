@@ -1,12 +1,18 @@
 package com.danielnorman.openhack.Handlers;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.parse.ParseGeoPoint;
 
 import java.util.Timer;
@@ -16,48 +22,70 @@ import java.util.concurrent.Callable;
 /**
  * Created by Daniel on 1/30/15.
  */
-public class LocationHandler {
+public class LocationHandler implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        com.google.android.gms.location.LocationListener {
     private Context mContext;
-    private LocationManager mLocationManager;
     private Location mLocation;
     private ParseGeoPoint mGeoPoint;
+
+    public GoogleApiClient mGoogleApiClient;
+    public LocationRequest mLocationRequest;
 
 
     public LocationHandler(Context mContext) {
         this.mContext = mContext;
-        this.mLocationManager = (LocationManager) this.mContext.getSystemService(mContext.LOCATION_SERVICE);
 
-        Criteria criteria = new Criteria();
-        String provider = mLocationManager.getBestProvider(criteria, true);
-        this.mLocation = mLocationManager.getLastKnownLocation(provider);
-        if (this.mLocation != null) {
-            this.mGeoPoint = new ParseGeoPoint(this.mLocation.getLatitude(), this.mLocation.getLongitude());
-        } else {
-            this.mGeoPoint = null;
-        }
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(1000 * 60 * 2);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 10, locationListenerGps);
+        buildGoogleApiClient();
     }
+
 
     public ParseGeoPoint getGeoPoint() {
         return mGeoPoint;
     }
-    public Location getLocation() {
-        return mLocation;
+
+    public void setGeoPoint(Location location) {
+        mLocation = location;
+        mGeoPoint = new ParseGeoPoint(mLocation.getLatitude(), mLocation.getLongitude());
+        System.out.println("Location set: " + mGeoPoint);
     }
 
-    LocationListener locationListenerGps = new LocationListener() {
-        public void onLocationChanged(Location location) {
-            if (location != null) {
-                mLocation = location;
-                if (mLocation != null) {
-                    mGeoPoint = new ParseGeoPoint(mLocation.getLatitude(), mLocation.getLongitude());
-                }            }
-            System.out.println("Print location");
-        }
-        public void onProviderDisabled(String provider) {}
-        public void onProviderEnabled(String provider) {}
-        public void onStatusChanged(String provider, int status, Bundle extras) {}
-    };
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(mContext)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
+    }
+    protected void startLocationUpdates() {
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+    }
 
+
+    @Override
+    public void onLocationChanged(Location location) {
+        setGeoPoint(location);
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        stopLocationUpdates();
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        startLocationUpdates();
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) { }
+
+    public void stopLocationUpdates() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+    }
 }

@@ -19,6 +19,9 @@ import com.danielnorman.openhack.Handlers.LocationHandler;
 import com.danielnorman.openhack.Handlers.ParseHandler;
 import com.parse.Parse;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 public class MainActivity extends ActionBarActivity {
     public static int REQUEST_TAKE_PHOTO = 2;
@@ -30,6 +33,8 @@ public class MainActivity extends ActionBarActivity {
     public MapFragment mMapFragment;
     public ListViewFragment mListViewFragment;
     public PostFragment mPostFragment;
+
+    private Timer mLoadPostsTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +61,21 @@ public class MainActivity extends ActionBarActivity {
         mParseHandler.findPosts(true);
 
         addFragment(mListViewFragment);
+
+        mLoadPostsTimer = new Timer();
+        mLoadPostsTimer.schedule(new LoadTask(), 0, 100);
     }
 
-    public void addFragment(Fragment fragment) {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.main_layout, fragment).commit();
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mLocationHandler.mGoogleApiClient.disconnect();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mLocationHandler.mGoogleApiClient.connect();
     }
 
     @Override
@@ -74,6 +89,26 @@ public class MainActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         return super.onOptionsItemSelected(item);
+    }
+
+    class LoadTask extends TimerTask {
+        public void run() {
+            if (mLocationHandler.getGeoPoint() != null) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mParseHandler.findPosts(true);
+                    }
+                });
+                mLoadPostsTimer.cancel();
+            }
+        }
+    }
+
+
+    public void addFragment(Fragment fragment) {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.main_layout, fragment).commit();
     }
 
     public void onClick(View view) {

@@ -62,6 +62,10 @@ public class PostAdapter extends ArrayAdapter<ParseObject> {
     public String timeDifferenceFromPost(ParseObject post)
     {
         double difference = ((new Date()).getTime() - post.getCreatedAt().getTime()) / 1000;
+        if (difference > 60 * 60 * 24) {
+            int days = (int) Math.round(difference / (60 * 60 * 24));
+            return days + (days > 1 ? " days " : " day ") + "ago";
+        }
         if (difference > 60 * 60) {
             int hours = (int) Math.round(difference / (60 * 60));
             return hours + (hours > 1 ? " hours " : " hour ") + "ago";

@@ -42,7 +42,7 @@ public class PostFragment extends Fragment {
     public void submitPost() {
         if (mBitmap != null) {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            mBitmap.compress(Bitmap.CompressFormat.JPEG, 40, outputStream);
+            mBitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
             byte[] imageData = outputStream.toByteArray();
 
             mMainActivity.mParseHandler.postToParse(mCaptionEditText.getText().toString(), imageData);
