@@ -2,70 +2,51 @@ package com.danielnorman.openhack.Handlers;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.danielnorman.openhack.MainActivity;
 import com.parse.FindCallback;
-import com.parse.GetDataCallback;
 import com.parse.ParseException;
-import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ParseHandler {
 
     MainActivity mMainActivity;
-
-    ArrayList<ParseObject> mPostArrayList;
-    ArrayList<Bitmap> mPostBitmapsArrayList;
-
+    Map<String, PostContainer> mPostMap;
 
     public ParseHandler(MainActivity mainActivity) {
         this.mMainActivity = mainActivity;
-        this.mPostArrayList = new ArrayList<>();
-        this.mPostBitmapsArrayList = new ArrayList<>();
+        this.mPostMap = new HashMap<>();
     }
 
-    public void postToParse(final String caption, byte[] imageData) {
+    public void postToParse(final String caption, final String imageLink) {
         final ParseGeoPoint location = mMainActivity.mLocationHandler.getGeoPoint();
         if (location != null) {
-            final ParseFile imageFile = new ParseFile("image.jpeg", imageData);
-            imageFile.saveInBackground(new SaveCallback() {
+            ParseObject postObject = new ParseObject("Post");
+            postObject.put("imageURL", imageLink);
+            postObject.put("caption", caption);
+            postObject.put("locationGeoPoint", location);
+
+            postObject.saveInBackground(new SaveCallback() {
                 public void done(ParseException e) {
                     if (e == null) {
-                        System.out.println("Saved File successfully.");
-
-                        ParseObject postObject = new ParseObject("Post");
-                        postObject.put("imageURL", "http://i.imgur.com/0LcGMKl.jpg");
-                        postObject.put("caption", caption);
-                        postObject.put("locationGeoPoint", location);
-                        postObject.put("imageFile", imageFile);
-
-                        postObject.saveInBackground(new SaveCallback() {
-                            public void done(ParseException e) {
-                                if (e == null) {
-                                    showAlert();
-                                    mMainActivity.addFragment(mMainActivity.mListViewFragment);
-                                    findPosts(true);
-                                    System.out.println("Saved Post successfully.");
-                                } else {
-                                    System.out.println("Error saving post: " + e);
-                                }
-                            }
-                        });
+                        showAlert();
+                        mMainActivity.addFragment(mMainActivity.mListViewFragment);
+                        findPosts(true);
+                        System.out.println("Saved Post successfully.");
                     } else {
-                        System.out.println("Error saving file: " + e);
+                        System.out.println("Error saving post: " + e);
                     }
                 }
             });
-        }
+         }
     }
 
     public void showAlert() {
@@ -86,19 +67,22 @@ public class ParseHandler {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Post");
             if (refreshPosts) {
                 if (mMainActivity.mListViewFragment.mPostAdapter != null) mMainActivity.mListViewFragment.mPostAdapter.clear();
-                mPostArrayList.clear();
-                for (Bitmap bmp : mPostBitmapsArrayList) bmp.recycle();
-                mPostBitmapsArrayList.clear();
             } else {
-                query.setSkip(mPostArrayList.size());
+                if (mMainActivity.mListViewFragment.mPostAdapter != null) {
+                    query.setSkip(mMainActivity.mListViewFragment.mPostAdapter.getCount());
+                }
             }
             query.whereWithinMiles("locationGeoPoint", location, 10);
             query.setLimit(10);
             query.findInBackground(new FindCallback<ParseObject>() {
                 public void done(List<ParseObject> postList, ParseException e) {
                     if (e == null) {
-                        mPostArrayList.addAll(postList);
-                        loadImage(mPostBitmapsArrayList.size());
+                        for (ParseObject o : postList) {
+                            mMainActivity.mListViewFragment.mPostAdapter.add(o.getObjectId());
+                            if (!mPostMap.containsKey(o.getObjectId())) {
+                                loadPost(o);
+                            }
+                        }
                     } else {
                         Log.d("Parse", "Error: " + e.getMessage());
                     }
@@ -108,32 +92,17 @@ public class ParseHandler {
         }
     }
 
-    public void loadImage(final int index) {
-        if (index >= mPostArrayList.size()) return;
-        ParseFile imageParseFile = (ParseFile) mPostArrayList.get(index).get("imageFile");
-        imageParseFile.getDataInBackground(new GetDataCallback() {
-            public void done(byte[] data, ParseException e) {
-                if (e == null) {
-                    Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-                    if (index >= mPostArrayList.size()) return;
-                    mMainActivity.mListViewFragment.mPostAdapter.add(mPostArrayList.get(index));
-                    mPostBitmapsArrayList.add(bmp);
-                    if (mPostBitmapsArrayList.size() < mPostArrayList.size()) {
-                        loadImage(index + 1);
-                    } else {
-                        mMainActivity.mMapFragment.addMarkers();
-                    }
-                } else {
-                    // something went wrong
-                }
-            }
-        });
+    public void loadPost(ParseObject post) {
+        PostContainer container = new PostContainer(post);
+        mPostMap.put(post.getObjectId(), container);
+
+        ImageDownloader downloader = new ImageDownloader(mMainActivity);
+        downloader.execute(container);
+
+        System.out.println("Loading image");
     }
 
-    public ArrayList<ParseObject> getPostArrayList() {
-        return this.mPostArrayList;
-    }
-    public ArrayList<Bitmap> getPostBitmapsArrayList() {
-        return this.mPostBitmapsArrayList;
+    public Map<String, PostContainer> getPostMap() {
+        return this.mPostMap;
     }
 }

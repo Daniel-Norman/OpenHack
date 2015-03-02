@@ -8,21 +8,22 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.danielnorman.openhack.Handlers.PostContainer;
 import com.parse.ParseObject;
 
 import java.util.ArrayList;
 import java.util.Date;
 
-public class PostAdapter extends ArrayAdapter<ParseObject> {
+public class PostAdapter extends ArrayAdapter<String> {
 
     private final Context context;
 
     MainActivity mMainActivity;
 
 
-    public PostAdapter(Context context, MainActivity mainActivity, ArrayList<ParseObject> posts)
+    public PostAdapter(Context context, MainActivity mainActivity, ArrayList<String> postIDs)
     {
-        super(context, R.layout.fragment_list_post, posts);
+        super(context, R.layout.fragment_list_post, postIDs);
         this.context = context;
         this.mMainActivity = mainActivity;
     }
@@ -30,7 +31,6 @@ public class PostAdapter extends ArrayAdapter<ParseObject> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.fragment_list_post, parent, false);
         TextView timeStamp = (TextView) rowView.findViewById(R.id.time_stamp);
@@ -38,20 +38,23 @@ public class PostAdapter extends ArrayAdapter<ParseObject> {
         ImageView imageView = (ImageView) rowView.findViewById(R.id.post_image);
 
 
-        if (position >= mMainActivity.mParseHandler.getPostArrayList().size()) return rowView;
-        ParseObject post = mMainActivity.mParseHandler.getPostArrayList().get(position);
+        if (position >= getCount()) return rowView;
 
-        textView.setText(post.getString("caption"));
-        timeStamp.setText(timeDifferenceFromPost(post));
+        /*
+        TODO get PostContainer by looking at Dictionary, using getItem(position) as key
+         */
 
-        if (!mMainActivity.mParseHandler.getPostBitmapsArrayList().isEmpty() &&
-                mMainActivity.mParseHandler.getPostBitmapsArrayList().get(position) != null) {
-            imageView.setImageBitmap(mMainActivity.mParseHandler.getPostBitmapsArrayList().get(position));
-        }
+        PostContainer post = mMainActivity.mParseHandler.getPostMap().get(getItem(position));
+        if (post == null) return rowView;
+
+        textView.setText(post.getParseObject().getString("caption"));
+        timeStamp.setText(timeDifferenceFromPost(post.getParseObject()));
+
+        if (post.getBitmap() != null) imageView.setImageBitmap(post.getBitmap());
 
 
         //Scroll to refresh
-        if (position == mMainActivity.mParseHandler.getPostArrayList().size() - 1) {
+        if (position == getCount() - 1) {
             mMainActivity.mParseHandler.findPosts(false);
         }
 

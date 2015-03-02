@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.danielnorman.openhack.Handlers.PostContainer;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdate;
@@ -29,7 +30,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     //Creates objects
     MapView mapView;
     GoogleMap map;
-    HashMap<Marker, ParseObject> mPostMarkerMap = new HashMap<>();
+    HashMap<Marker, PostContainer> mPostMarkerMap = new HashMap<>();
 
     boolean addedMarkers = false;
 
@@ -73,9 +74,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
                     map.animateCamera(cameraUpdate);
 
                     //Add markers from ParseHandler
-                    if (!addedMarkers) {
-                        addMarkers();
-                    }
+                    addMarkers();
 
                     // Setting a custom info window adapter for the google map
                     map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
@@ -99,10 +98,9 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
                             // Getting reference to the TextView to set longitude
                             ImageView imageView = (ImageView) v.findViewById(R.id.map_window_imageview);
 
-                            captionTextView.setText(mPostMarkerMap.get(marker).getString("caption"));
+                            captionTextView.setText(mPostMarkerMap.get(marker).getParseObject().getString("caption"));
 
-                            Bitmap bitmap = mMainActivity.mParseHandler.getPostBitmapsArrayList().get(
-                                    mMainActivity.mParseHandler.getPostArrayList().indexOf(mPostMarkerMap.get(marker)));
+                            Bitmap bitmap = mPostMarkerMap.get(marker).getBitmap();
 
                             imageView.setImageBitmap(bitmap);
 
@@ -128,13 +126,15 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
     @Override
     public void onResume(){
-        mapView.onResume();
         super.onResume();
+        mapView.onResume();
+        addMarkers();
     }
     @Override
     public void onDestroy(){
         super.onDestroy();
         mapView.onDestroy();
+        mPostMarkerMap.clear();
     }
     @Override
     public void onLowMemory(){
@@ -144,20 +144,22 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        System.out.println(mPostMarkerMap.get(marker).getString("caption"));
+        System.out.println(mPostMarkerMap.get(marker).getParseObject().getString("caption"));
         marker.showInfoWindow();
         return true;
     }
 
     public void addMarkers() {
         if (map != null) {
-            for (ParseObject post : mMainActivity.mParseHandler.getPostArrayList()) {
-                ParseGeoPoint geoPoint = post.getParseGeoPoint("locationGeoPoint");
+            for (Marker marker : mPostMarkerMap.keySet()) {
+                marker.remove();
+            }
+            for (PostContainer post : mMainActivity.mParseHandler.getPostMap().values()) {
+                ParseGeoPoint geoPoint = post.getParseObject().getParseGeoPoint("locationGeoPoint");
                 Marker marker = map.addMarker(new MarkerOptions().position(new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude()))
-                                                .title(post.getString("caption")));
+                        .title(post.getParseObject().getString("caption")));
                 mPostMarkerMap.put(marker, post);
             }
-            addedMarkers = true;
         }
     }
 }
