@@ -22,6 +22,12 @@ import com.parse.Parse;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/*
+Store dictionary with key objectID, value PostContainer
+When PostContainer object loads, add it to
+
+
+ */
 
 public class MainActivity extends ActionBarActivity {
     public static int REQUEST_TAKE_PHOTO = 2;
@@ -30,9 +36,11 @@ public class MainActivity extends ActionBarActivity {
     public LocationHandler mLocationHandler;
     public CameraHandler mCameraHandler;
     public ParseHandler mParseHandler;
+
     public MapFragment mMapFragment;
     public ListViewFragment mListViewFragment;
     public PostFragment mPostFragment;
+
 
     private Timer mLoadPostsTimer;
 
@@ -133,7 +141,7 @@ public class MainActivity extends ActionBarActivity {
                 } else {
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(mPostFragment.mCaptionEditText.getWindowToken(), 0);
-                    mPostFragment.submitPost();
+                    mPostFragment.startImageUpload();
                 }
                 break;
         }
@@ -165,10 +173,9 @@ public class MainActivity extends ActionBarActivity {
         if (requestCode == REQUEST_CROP_PHOTO && resultCode == RESULT_OK) {
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), mCameraHandler.getImageUri());
-                mPostFragment.setImage(bitmap);
+                mPostFragment.refreshViewWithImage(bitmap);
+                mPostFragment.setImagePath(mCameraHandler.getImageUri().getPath());
             } catch (Exception e) {}
         }
     }
-
-
 }

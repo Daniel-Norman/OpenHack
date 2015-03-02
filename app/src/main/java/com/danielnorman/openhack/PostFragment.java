@@ -9,7 +9,10 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import java.io.ByteArrayOutputStream;
+import com.danielnorman.openhack.Handlers.ImageUploader;
+
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 
 public class PostFragment extends Fragment {
 
@@ -17,6 +20,8 @@ public class PostFragment extends Fragment {
     EditText mCaptionEditText;
     Bitmap mBitmap;
     MainActivity mMainActivity;
+    String mImagePath;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -27,25 +32,34 @@ public class PostFragment extends Fragment {
         this.mMainActivity = mainActivity;
     }
 
-    public void setImage(Bitmap image) {
+    public void refreshViewWithImage(Bitmap image) {
         mBitmap = image;
-        if (mImageView == null) {
-            mImageView = (ImageView) getView().findViewById(R.id.image_view);
-        }
-        if (mCaptionEditText == null) {
-            mCaptionEditText = (EditText) getView().findViewById(R.id.caption_edittext);
-        }
+        mImageView = (ImageView) getView().findViewById(R.id.image_view);
+        if (mImageView != null) mImageView.setImageBitmap(mBitmap);
 
-        mImageView.setImageBitmap(mBitmap);
+        mCaptionEditText = (EditText) getView().findViewById(R.id.caption_edittext);
+        if (mCaptionEditText != null) mCaptionEditText.setText("");
     }
 
-    public void submitPost() {
-        if (mBitmap != null) {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            mBitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
-            byte[] imageData = outputStream.toByteArray();
+    public void setImagePath(String imagePath) {
+        mImagePath = imagePath;
+    }
 
-            mMainActivity.mParseHandler.postToParse(mCaptionEditText.getText().toString(), imageData);
+    public void startImageUpload() {
+        if (mBitmap != null) {
+            try {
+                OutputStream stream = new FileOutputStream(mImagePath);
+                mBitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
+
+                ImageUploader uploader = new ImageUploader(mMainActivity);
+                uploader.execute(mImagePath);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+    }
+
+    public void uploadPost(String imageLink) {
+        mMainActivity.mParseHandler.postToParse(mCaptionEditText.getText().toString(), imageLink);
     }
 }
