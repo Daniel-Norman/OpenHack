@@ -5,10 +5,12 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +34,7 @@ When PostContainer object loads, add it to
 public class MainActivity extends ActionBarActivity {
     public static int REQUEST_TAKE_PHOTO = 2;
     public static int REQUEST_CROP_PHOTO = 3;
+    public final int IMAGE_SHRINK_FACTOR = 1; //1 for displaying images as big as the ImageViews, 2 for half as big, etc
 
     public LocationHandler mLocationHandler;
     public CameraHandler mCameraHandler;
@@ -41,8 +44,9 @@ public class MainActivity extends ActionBarActivity {
     public ListViewFragment mListViewFragment;
     public PostFragment mPostFragment;
 
-
     private Timer mLoadPostsTimer;
+
+    public int mScreenWidth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +76,11 @@ public class MainActivity extends ActionBarActivity {
 
         mLoadPostsTimer = new Timer();
         mLoadPostsTimer.schedule(new LoadTask(), 0, 100);
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        mScreenWidth = size.x;
     }
 
     @Override

@@ -30,7 +30,9 @@ public class ImageDownloader extends AsyncTask<PostContainer, Void, Boolean> {
             connection.setDoInput(true);
             connection.connect();
             InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            Bitmap myBitmap = decodeSampledBitmapFromStream(input,
+                    mMainActivity.mScreenWidth / mMainActivity.IMAGE_SHRINK_FACTOR,
+                    mMainActivity.mScreenWidth / mMainActivity.IMAGE_SHRINK_FACTOR);
             if (myBitmap != null) {
                 params[0].setBitmap(myBitmap);
                 return true;
@@ -45,5 +47,34 @@ public class ImageDownloader extends AsyncTask<PostContainer, Void, Boolean> {
     protected void onPostExecute(Boolean success) {
         super.onPostExecute(success);
         mMainActivity.mListViewFragment.mPostAdapter.notifyDataSetChanged();
+    }
+
+    public static int calculateInSampleSize(int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = 1024;
+        final int width = 1024;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+
+    public static Bitmap decodeSampledBitmapFromStream(InputStream is, int reqWidth, int reqHeight) {
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = calculateInSampleSize(reqWidth, reqHeight);
+
+        return BitmapFactory.decodeStream(is, null, options);
     }
 }
