@@ -51,7 +51,7 @@ public class LocationHandler implements GoogleApiClient.ConnectionCallbacks,
     public void setGeoPoint(Location location) {
         mLocation = location;
         mGeoPoint = new ParseGeoPoint(mLocation.getLatitude(), mLocation.getLongitude());
-        System.out.println("Location set: " + mGeoPoint);
+        //System.out.println("Location set: " + mGeoPoint);
     }
 
     protected synchronized void buildGoogleApiClient() {

@@ -32,8 +32,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     GoogleMap map;
     HashMap<Marker, PostContainer> mPostMarkerMap = new HashMap<>();
 
-    boolean addedMarkers = false;
-
     // Creates pointer to main activity
     MainActivity mMainActivity;
 
@@ -67,7 +65,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
                     map.setOnMarkerClickListener(this);
                     // Finds the current location (testing: marker at current location)
                     ParseGeoPoint loc = mMainActivity.mLocationHandler.getGeoPoint();
-                    //map.addMarker(new MarkerOptions().position(new LatLng(loc.getLatitude(), loc.getLongitude())).);
 
                     // Zooms in on current location
                     CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(loc.getLatitude(), loc.getLongitude()), 18);
