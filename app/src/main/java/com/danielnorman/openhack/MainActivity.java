@@ -24,13 +24,6 @@ import com.parse.Parse;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/*
-Store dictionary with key objectID, value PostContainer
-When PostContainer object loads, add it to
-
-
- */
-
 public class MainActivity extends ActionBarActivity {
     public static int REQUEST_TAKE_PHOTO = 2;
     public static int REQUEST_CROP_PHOTO = 3;
