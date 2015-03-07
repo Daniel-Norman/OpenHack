@@ -11,8 +11,8 @@ import com.parse.ParseObject;
 public class PostContainer {
     private ParseObject mParseObject;
     private Bitmap mBitmap;
+    private Bitmap mSmallBitmap;
     private boolean mShouldReloadBitmap;
-
 
     public PostContainer(ParseObject parseObject) {
         this.mParseObject = parseObject;
@@ -36,8 +36,10 @@ public class PostContainer {
 
     public void setBitmap(Bitmap bmp) {
         this.mBitmap = bmp;
+        this.mSmallBitmap = Bitmap.createScaledBitmap(this.mBitmap, 140, 140, false);
     }
 
     public ParseObject getParseObject() { return this.mParseObject; }
     public Bitmap getBitmap() { return this.mBitmap; }
+    public Bitmap getSmallBitmap() { return this.mSmallBitmap; };
 }

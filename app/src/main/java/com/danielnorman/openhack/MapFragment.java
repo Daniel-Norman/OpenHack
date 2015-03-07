@@ -97,7 +97,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
                             captionTextView.setText(mPostMarkerMap.get(marker).getParseObject().getString("caption"));
 
-                            Bitmap bitmap = mPostMarkerMap.get(marker).getBitmap();
+                            Bitmap bitmap = mPostMarkerMap.get(marker).getSmallBitmap();
 
                             imageView.setImageBitmap(bitmap);
 
