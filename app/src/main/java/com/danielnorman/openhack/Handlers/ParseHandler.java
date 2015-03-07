@@ -92,6 +92,9 @@ public class ParseHandler {
         }
     }
 
+    /*
+    TODO: Make each post only load the small image. Load big images when in proper spot in ListView.
+     */
     public void loadPost(ParseObject post) {
         PostContainer container = new PostContainer(post);
         mPostMap.put(post.getObjectId(), container);
