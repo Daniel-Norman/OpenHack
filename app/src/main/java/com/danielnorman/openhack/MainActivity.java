@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 
 import com.danielnorman.openhack.Handlers.CameraHandler;
 import com.danielnorman.openhack.Handlers.LocationHandler;
@@ -124,6 +125,7 @@ public class MainActivity extends ActionBarActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.post_button:
+                enableSubmitButton(true);
                 addFragment(mPostFragment);
                 mCameraHandler.dispatchTakePictureIntent();
                 break;
@@ -141,6 +143,7 @@ public class MainActivity extends ActionBarActivity {
                     addFragment(mListViewFragment);
                     mParseHandler.findPosts(true);
                 } else {
+                    enableSubmitButton(false);
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(mPostFragment.mCaptionEditText.getWindowToken(), 0);
                     mPostFragment.startImageUpload();
@@ -178,6 +181,17 @@ public class MainActivity extends ActionBarActivity {
                 mPostFragment.refreshViewWithImage(bitmap);
                 mPostFragment.setImagePath(mCameraHandler.getImageUri().getPath());
             } catch (Exception e) {}
+        }
+    }
+
+    /*
+    Disable submit button right after pressing it.
+    Enable when returning to Post view or after a successful post.
+     */
+    public void enableSubmitButton(boolean enabled) {
+        Button submitButton = (Button) findViewById(R.id.submit_button);
+        if (submitButton != null) {
+            submitButton.setEnabled(enabled);
         }
     }
 }
