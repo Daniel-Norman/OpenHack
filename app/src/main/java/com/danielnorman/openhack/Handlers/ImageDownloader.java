@@ -30,11 +30,18 @@ public class ImageDownloader extends AsyncTask<PostContainer, Void, Boolean> {
             connection.setDoInput(true);
             connection.connect();
             InputStream input = connection.getInputStream();
-            Bitmap myBitmap = decodeSampledBitmapFromStream(input,
-                    mMainActivity.mScreenWidth / mMainActivity.IMAGE_SHRINK_FACTOR,
-                    mMainActivity.mScreenWidth / mMainActivity.IMAGE_SHRINK_FACTOR);
-            if (myBitmap != null) {
-                params[0].setBitmap(myBitmap);
+            int imageSize = params[0].mShouldLoadSmallBitmapOnly ?
+                    PostContainer.SMALL_BITMAP_SIZE :
+                    mMainActivity.mScreenWidth / mMainActivity.IMAGE_SHRINK_FACTOR;
+            Bitmap loadedBitmap = decodeSampledBitmapFromStream(input, imageSize, imageSize);
+            if (loadedBitmap != null) {
+                if (params[0].mShouldLoadSmallBitmapOnly) {
+                    params[0].mShouldLoadSmallBitmapOnly = false;
+                    params[0].setSmallBitmap(loadedBitmap);
+                }
+                else {
+                    params[0].setBitmap(loadedBitmap);
+                }
                 return true;
             }
         } catch (IOException e) {
