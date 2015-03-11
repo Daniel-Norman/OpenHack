@@ -41,7 +41,6 @@ public class ParseHandler {
                         mMainActivity.addFragment(mMainActivity.mListViewFragment);
                         mMainActivity.enableSubmitButton(true);
                         findPosts(true);
-                        System.out.println("Saved Post successfully.");
                     } else {
                         System.out.println("Error saving post: " + e);
                     }
@@ -102,8 +101,6 @@ public class ParseHandler {
 
         ImageDownloader downloader = new ImageDownloader(mMainActivity);
         downloader.execute(container);
-
-        System.out.println("Loading image");
     }
 
     public Map<String, PostContainer> getPostMap() {

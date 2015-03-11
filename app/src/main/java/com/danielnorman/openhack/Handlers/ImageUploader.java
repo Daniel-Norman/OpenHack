@@ -61,11 +61,10 @@ public class ImageUploader extends AsyncTask<String, Void, String> {
 
             if (json.getBoolean("success")) {
                 JSONObject results = (JSONObject) json.get("data");
-                System.out.println("Success! Image link: " + results.optString("link"));
                 return results.getString("link");
             }
             else {
-                System.out.println("Error posting image. :(");
+                System.out.println("Error posting image to imgur.");
                 return null;
             }
 

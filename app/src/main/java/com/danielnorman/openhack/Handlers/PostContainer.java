@@ -35,7 +35,6 @@ public class PostContainer {
             mShouldReloadBitmap = false;
             ImageDownloader downloader = new ImageDownloader(mainActivity);
             downloader.execute(this);
-            System.out.println("Reloading bitmap");
         }
     }
 
