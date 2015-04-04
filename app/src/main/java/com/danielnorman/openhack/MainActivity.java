@@ -28,7 +28,7 @@ import java.util.TimerTask;
 public class MainActivity extends ActionBarActivity {
     public static int REQUEST_TAKE_PHOTO = 2;
     public static int REQUEST_CROP_PHOTO = 3;
-    public final int IMAGE_SHRINK_FACTOR = 2; //1 for displaying images as big as the ImageViews, 2 for half as big, etc
+    public final int IMAGE_SHRINK_FACTOR = 100; //1 for displaying images as big as the ImageViews, 2 for half as big, etc
 
     public LocationHandler mLocationHandler;
     public CameraHandler mCameraHandler;
